@@ -2,6 +2,7 @@ import React from 'react';
 import MainButton from '../../components/mainbutton';
 import GreenButton from '../../components/greenbutton';
 import WhiteButton from '../../components/whitebutton';
+import { IoAlertCircleOutline } from "react-icons/io5";
 
 const EmotionPlaylist = () => {
   const emotions = [
@@ -69,8 +70,8 @@ const EmotionPlaylist = () => {
               </div>
             </div>
           ))}
-          <div className="mt-2 text-left text-sm text-green-600">
-            <p>플레이리스트는 일기를 작성하실 때 선택된 음악들로 이루어집니다.</p>
+          <div className="mt-2 text-left text-sm flex text-green-600">
+            <IoAlertCircleOutline className="mt-[2.8px] mr-1"/><p>플레이리스트는 일기를 작성하실 때 선택된 음악들로 이루어집니다.</p>
           </div>
         </div>
       
