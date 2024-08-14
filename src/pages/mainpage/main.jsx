@@ -6,7 +6,7 @@ import RecentMusic from './RecentMusic';
 
 const Main = () => {
     return (
-      <div className="flex flex-col min-h-screen bg-[#f6f6f6]">
+      <div className="flex flex-col min-h-screen bg-gradient-to-br to-blue-200 from-green-300">
         <Nav />
         <main className="flex-grow container mx-auto px-4 py-8">
           
