@@ -1,14 +1,15 @@
 import React from 'react';
 import Galpi from '../../components/galpi';
+import { Link } from 'react-router-dom';
 
 const Frame = () => {
   return (
     <div className="space-y-8">
       <div>
         <Galpi text="개인 다이어리" />
-        <button className="text-green-600 px-4 py-2">
+        <Link to={'/write'} className="text-green-600 px-4 py-2">
             개인 다이어리 만들기
-        </button>
+        </Link>
         <div className="h-[172px] bg-[#edebe7] p-4 rounded-b-lg rounded-tr-lg flex items-center justify-center">
           <p className="text-gray-600">
             다이어리가 없어요 :(<br />
@@ -18,9 +19,9 @@ const Frame = () => {
       </div>
       <div>
         <Galpi text="교환 다이어리" />
-        <button className="text-green-600 px-4 py-2">
+        <Link to={'/write'} className="text-green-600 px-4 py-2">
             교환 다이어리 만들기
-          </button>
+          </Link>
         <div className="h-[172px] bg-[#edebe7] p-4 rounded-b-lg rounded-tr-lg flex items-center justify-center">
           <p className="text-gray-600">
             다이어리가 없어요 :(<br />

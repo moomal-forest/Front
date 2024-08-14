@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import MainButton from '../../components/mainbutton';
 import GreenButton from '../../components/greenbutton';
 import WhiteButton from '../../components/whitebutton';

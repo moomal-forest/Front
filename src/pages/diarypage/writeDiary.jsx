@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import GreenButton from "../../components/greenbutton";
+import axios from "axios";
 
 const WriteDiary = () => {
   const [input, setInput] = useState({
@@ -53,7 +54,7 @@ const WriteDiary = () => {
     }
   };
 
-  const handleSongSelect = (song) => {
+  const handleSongSelect = async (song) => {
     console.log(song);
     setInput((prev) => ({ ...prev, selectedSong: song }));
     if (audioRef.current) {
@@ -78,13 +79,14 @@ const WriteDiary = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      //여기에다가 post요청 하는거
+    //   const id = axios.post('http://localhost:3001/api/diary')
+    // navigate(`http://localhost:3001/diary/${id}`);
     console.log(input);
   };
 
   return (
-    <div
-      className="container mx-auto mt-8 px-4 py-8 max-w-6xl"
-          >
+    <div className="container mx-auto mt-8 px-4 py-8 max-w-6xl">
       <h1 className="text-4xl font-bold mb-8 text-center text-green-600">
         일기 작성
       </h1>
@@ -96,7 +98,7 @@ const WriteDiary = () => {
           <p>{error}</p>
         </div>
       )}
-      <form  className="space-y-6 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form className="space-y-6 shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="w-full md:w-1/2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
