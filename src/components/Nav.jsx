@@ -44,7 +44,7 @@ const Nav = () => {
           <ul className="flex space-x-4">
             <li><Link to="/notification">알림</Link></li>
             <li><Link to="/neighbor">이웃</Link></li>
-            <li><Link to="/playlist">감정플레이리스트</Link></li>
+            <li><Link to="/emotionplaylist">감정플레이리스트</Link></li>
             <li><Link to="/profile">내정보</Link></li>
             <li>로그아웃</li>
           </ul>
