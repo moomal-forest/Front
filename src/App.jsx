@@ -3,7 +3,7 @@ import Main from './pages/mainpage/main';
 import DiaryPage from './pages/notification/notification';
 import ProfilePage from './pages/mypage/profile';
 import NeighborPage from './pages/neighbor/neighbor';
-import PlaylistPage from './pages/playlist/playlist';
+import PlaylistPage from './pages/playlist/emotionplaylist';
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
           <Route path="/notification" element={<DiaryPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/neighbor" element={<NeighborPage />} />
-          <Route path="/playlist" element={<PlaylistPage />} />
+          <Route path="/emotionplaylist" element={<PlaylistPage />} />
         </Routes>
       </div>
     </Router>
