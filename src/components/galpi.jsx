@@ -1,8 +1,11 @@
-import React from 'react';
+import React from "react";
 
 const Galpi = ({ text }) => {
   return (
-    <div className="bg-green-500 text-white p-2 rounded-t-lg inline-block pl-4 pr-4">
+    <div
+      className="text-white text-xl p-2 rounded-t-lg inline-block pl-4 pr-4 font-pretendard"
+      style={{ backgroundColor: "#58AF5E" }}
+    >
       {text}
     </div>
   );

@@ -4,19 +4,30 @@ import DiaryPage from "./pages/notification/notification";
 import ProfilePage from "./pages/mypage/profile";
 import NeighborPage from "./pages/neighbor/neighbor";
 import PlaylistPage from "./pages/playlist/emotionplaylist";
+import Login from "./pages/auth/login";
+import Signup from "./pages/auth/signup";
+import DiaryCreation from "./pages/diarypage/diaryCreation";
 import WriteDiary from "./pages/diarypage/writeDiary";
+
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Main />} />
-        <Route path="/notification" element={<DiaryPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/neighbor" element={<NeighborPage />} />
-        <Route path="/emotionplaylist" element={<PlaylistPage />} />
-        <Route path="/write" element={<WriteDiary />} />
-      </Routes>
+
+      <div>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/notification" element={<DiaryPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/neighbor" element={<NeighborPage />} />
+          <Route path="/emotionplaylist" element={<PlaylistPage />} />
+          <Route path="/diaryCreation" element={<DiaryCreation />} />
+            <Route path="/write" element={<WriteDiary />} />
+        </Routes>
+      </div>
+    
     </Router>
   );
 }

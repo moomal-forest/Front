@@ -1,8 +1,10 @@
-import React from 'react';
+import React from "react";
 
 const GreenButton = ({ text,onClick }) => {
   return (
-    <button onClick={onClick}  className="bg-green-500 text-white hover:bg-green-600 p-2 rounded-lg inline-block pl-3 pr-3">
+
+    <button onClick={onClick} className="bg-[#58AF5E] text-white hover:bg-[#4C9B4E] p-2 rounded-lg inline-block pl-3 pr-3 font-pretendard text-2xl">
+
       {text}
     </button>
   );
