@@ -62,19 +62,21 @@ const EmotionPlaylist = () => {
         <MainButton />
       </div>
 
-      <div className="max-w-2xl mx-auto pt-16 px-4 relative z-10">
-        <h1 className="text-4xl font-bold text-green-600 mb-8">
+      <div className="max-w-6xl mx-auto pt-16 px-4 relative z-10">
+        <h1 className="text-5xl font-bold text-green-600 mb-8">
           감정 플레이리스트
         </h1>
 
-        <div className="flex flex-wrap gap-2 justify-around mb-6">
+        <div className="flex flex-wrap gap-2 justify-start mb-6">
           {emotions.map((emotion, index) => (
             <button
               key={index}
-              className="bg-green-100 hover:bg-green-300 rounded-full px-4 py-2 text-green-800 flex items-center"
+              className="bg-green-100 hover:bg-green-300 rounded-full px-4 py-2 text-green-800 flex items-center whitespace-nowrap"
             >
-              <span className="mr-2">{emotion.name}</span>
-              <span>{emotion.emoji}</span>
+              <span className="mr-2 text-2xl font-pretendard">
+                {emotion.name}
+              </span>
+              <span className="text-2xl">{emotion.emoji}</span>
             </button>
           ))}
         </div>
@@ -86,12 +88,13 @@ const EmotionPlaylist = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="음악 검색"
-              className="flex-grow p-2 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600"
+              className="flex-grow p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-600"
+              style={{ fontSize: "1.2rem" }} // placeholder 크기 조정
             />
             <button onClick={handleSearch} className="text-amber-950 p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-7 w-7"
+                className="h-10 w-10"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -144,7 +147,9 @@ const EmotionPlaylist = () => {
               ))}
             </div>
           )}
-          <h2 className="text-lg font-bold mb-2">현재 플레이리스트</h2>
+          <h2 className="text-2xl font-bold mb-2 font-pretendard text-custom-brown">
+            현재 플레이리스트
+          </h2>
           {playlist.map((song, index) => (
             <div
               key={index}
@@ -178,7 +183,7 @@ const EmotionPlaylist = () => {
               </div>
             </div>
           ))}
-          <div className="mt-2 text-left text-sm text-green-600">
+          <div className="mt-2 text-left text-sm text-green-600 font-pretendard text-xl">
             <p>
               플레이리스트는 일기를 작성하실 때 선택된 음악들로 이루어집니다.
             </p>
