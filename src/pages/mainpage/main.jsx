@@ -5,6 +5,7 @@ import MonthlyEmotion from "./MonthlyEmotion";
 import RecentMusic from "./RecentMusic";
 
 const Main = () => {
+
   return (
     <div className="flex flex-col min-h-screen bg-[#f6f6f6]">
       <Nav />
@@ -17,6 +18,7 @@ const Main = () => {
             {" "}
             {/* 높이 조정 */}
             <Frame />
+
           </div>
           <div className="w-80">
             <MonthlyEmotion />

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Galpi from "../../components/galpi";
@@ -20,6 +21,7 @@ const Frame = () => {
     if (filteredDiaries.length === 0) {
       return (
         <div className="h-[200px] bg-[#edebe7] p-4 rounded-b-lg rounded-tr-lg flex items-center justify-center">
+
           <p className="text-gray-600">
             다이어리가 없어요 :(
             <br />
@@ -64,6 +66,7 @@ const Frame = () => {
       </div>
       <div>
         <Galpi text="교환 다이어리" />
+
         <button
           className="text-green-600 px-4 py-2 font-pretendard text-xl"
           onClick={handleDiaryCreation}
@@ -71,6 +74,7 @@ const Frame = () => {
           교환 다이어리 만들기
         </button>
         {renderDiaries("exchange")}
+
       </div>
     </div>
   );

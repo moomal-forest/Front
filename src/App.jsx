@@ -7,10 +7,13 @@ import PlaylistPage from "./pages/playlist/emotionplaylist";
 import Login from "./pages/auth/login";
 import Signup from "./pages/auth/signup";
 import DiaryCreation from "./pages/diarypage/diaryCreation";
+import WriteDiary from "./pages/diarypage/writeDiary";
+
 
 function App() {
   return (
     <Router>
+
       <div>
         <Routes>
           <Route path="/" element={<Main />} />
@@ -21,8 +24,10 @@ function App() {
           <Route path="/neighbor" element={<NeighborPage />} />
           <Route path="/emotionplaylist" element={<PlaylistPage />} />
           <Route path="/diaryCreation" element={<DiaryCreation />} />
+            <Route path="/write" element={<WriteDiary />} />
         </Routes>
       </div>
+    
     </Router>
   );
 }
