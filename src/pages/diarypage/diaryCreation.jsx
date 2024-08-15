@@ -91,7 +91,7 @@ const DiaryCreation = () => {
         <div className="bg-[#f6f6f6] p-8 rounded-2xl shadow-lg">
           {/* 다이어리 이름 입력 */}
           <div className="mb-8">
-            <label className="block text-xl font-medium text-green-600 mb-2">
+            <label className="block text-2xl font-pretendard text-green-600 mb-2">
               다이어리 이름
             </label>
             <input
@@ -104,7 +104,7 @@ const DiaryCreation = () => {
 
           {/* 이웃 선택 */}
           <div className="mb-8">
-            <label className="block text-xl font-medium text-green-600 mb-2">
+            <label className="block text-2xl font-pretendard text-green-600 mb-2">
               초대할 이웃 선택
             </label>
             <div className="relative">
@@ -115,9 +115,9 @@ const DiaryCreation = () => {
                 {selectedNeighbor}
               </button>
               {isDropdownOpen && (
-                <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10">
+                <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10 font-pretendard">
                   <li
-                    className="p-4 hover:bg-gray-100 cursor-pointer"
+                    className="p-4 hover:bg-gray-100 cursor-pointer font-pretendard"
                     onClick={() => handleSelectNeighbor("혼자쓸래요")}
                   >
                     혼자쓸래요
@@ -142,10 +142,10 @@ const DiaryCreation = () => {
 
           {/* 색상 선택 */}
           <div className="mb-8">
-            <label className="block text-xl font-medium text-green-600 mb-2">
+            <label className="block text-2xl font-pretendard text-green-600 mb-2">
               커버색상 선택
             </label>
-            <div className="bg-white p-8 rounded-lg flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg flex justify-center items-center ">
               <div className="grid grid-cols-7 gap-6 w-full max-w-2xl">
                 {colors.map((color, index) => (
                   <button
@@ -164,13 +164,13 @@ const DiaryCreation = () => {
           {/* 생성 및 취소 버튼 */}
           <div className="flex justify-between space-x-4">
             <button
-              className="flex-1 py-3 bg-[#4CAF50] text-white rounded-lg text-lg font-medium"
+              className="flex-1 py-3 bg-[#4CAF50] text-white rounded-lg text-2xl font-pretendard"
               onClick={handleCreate}
             >
               만들기
             </button>
             <button
-              className="flex-1 py-3 bg-white text-[#4CAF50] border border-[#4CAF50] rounded-lg text-lg font-medium"
+              className="flex-1 py-3 bg-white text-[#4CAF50] border border-[#4CAF50] rounded-lg text-2xl font-pretendard"
               onClick={handleCancel}
             >
               취소
