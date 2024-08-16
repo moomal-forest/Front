@@ -1,53 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainButton from "../../components/mainbutton";
 import { neighbors } from "../neighbor/neighbors";
 
 const DiaryCreation = () => {
   const navigate = useNavigate();
-  const [selectedNeighbor, setSelectedNeighbor] = useState("혼자쓸래요");
+  const [selectedNeighbors, setSelectedNeighbors] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState(null);
-  const [diaryName, setDiaryName] = useState(""); // 다이어리 이름 상태 추가
+  const [diaryName, setDiaryName] = useState("");
+  const dropdownRef = useRef(null);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
   const handleSelectNeighbor = (neighbor) => {
-    setSelectedNeighbor(neighbor);
-    setIsDropdownOpen(false);
+    setSelectedNeighbors(prev => {
+      if (prev.includes(neighbor)) {
+        return prev.filter(n => n !== neighbor);
+      } else {
+        return [...prev, neighbor];
+      }
+    });
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const colors = [
-    "#86C1AF",
-    "#C0E1D8",
-    "#CBE8E3",
-    "#E0F4ED",
-    "#E4FFBC",
-    "#D5F0AC",
-    "#BFF86A",
-    "#90CBCF",
-    "#B5DEE2",
-    "#CCEEF0",
-    "#E1CEE1",
-    "#D3B8D2",
-    "#9DA8CE",
-    "#BCD9F2",
-    "#EF95AF",
-    "#EAB5C5",
-    "#EDC8D8",
-    "#EFCFD6",
-    "#F0DFE4",
-    "#EBB0AA",
-    "#ECBEB6",
-    "#EBB69F",
-    "#EFD29D",
-    "#F1DFBE",
-    "#F2E7C4",
-    "#F0DBD0",
-    "#E4C3BD",
-    "#EDCCC5",
+    "#86C1AF", "#C0E1D8", "#CBE8E3", "#E0F4ED", "#E4FFBC", "#D5F0AC", "#BFF86A",
+    "#90CBCF", "#B5DEE2", "#CCEEF0", "#E1CEE1", "#D3B8D2", "#9DA8CE", "#BCD9F2",
+    "#EF95AF", "#EAB5C5", "#EDC8D8", "#EFCFD6", "#F0DFE4", "#EBB0AA", "#ECBEB6",
+    "#EBB69F", "#EFD29D", "#F1DFBE", "#F2E7C4", "#F0DBD0", "#E4C3BD", "#EDCCC5",
   ];
 
   const handleColorSelect = (color) => {
@@ -57,12 +52,13 @@ const DiaryCreation = () => {
   const handleCreate = () => {
     if (selectedColor && diaryName) {
       const newDiary = {
+        id: Date.now().toString(),
         name: diaryName,
         color: selectedColor,
-        type: selectedNeighbor === "혼자쓸래요" ? "personal" : "exchange",
+        type: selectedNeighbors.length > 0 ? "exchange" : "personal",
+        neighbors: selectedNeighbors,
       };
 
-      // localStorage를 사용하여 다이어리 정보 저장
       const diaries = JSON.parse(localStorage.getItem("diaries") || "[]");
       diaries.push(newDiary);
       localStorage.setItem("diaries", JSON.stringify(diaries));
@@ -89,7 +85,6 @@ const DiaryCreation = () => {
         </h1>
 
         <div className="bg-[#f6f6f6] p-8 rounded-2xl shadow-lg">
-          {/* 다이어리 이름 입력 */}
           <div className="mb-8">
             <label className="block text-2xl font-pretendard text-green-600 mb-2">
               다이어리 이름
@@ -102,35 +97,26 @@ const DiaryCreation = () => {
             />
           </div>
 
-          {/* 이웃 선택 */}
           <div className="mb-8">
             <label className="block text-2xl font-pretendard text-green-600 mb-2">
-              초대할 이웃 선택
+              초대할 이웃 선택 (다중 선택 가능)
             </label>
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <button
                 className="w-full p-4 border border-gray-300 rounded-lg text-left"
                 onClick={toggleDropdown}
               >
-                {selectedNeighbor}
+                {selectedNeighbors.length > 0 ? selectedNeighbors.join(", ") : "이웃을 선택하세요"}
               </button>
               {isDropdownOpen && (
-                <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10 font-pretendard">
-                  <li
-                    className="p-4 hover:bg-gray-100 cursor-pointer font-pretendard"
-                    onClick={() => handleSelectNeighbor("혼자쓸래요")}
-                  >
-                    혼자쓸래요
-                  </li>
+                <ul className="absolute w-full bg-white border border-gray-300 rounded-lg mt-2 z-10 font-pretendard max-h-60 overflow-y-auto">
                   {neighbors.map((neighbor, index) => (
                     <li
                       key={index}
-                      className="p-4 hover:bg-gray-100 cursor-pointer"
-                      onClick={() =>
-                        handleSelectNeighbor(
-                          `${neighbor.name} (${neighbor.id})`
-                        )
-                      }
+                      className={`p-4 hover:bg-gray-100 cursor-pointer ${
+                        selectedNeighbors.includes(`${neighbor.name} (${neighbor.id})`) ? "bg-green-100" : ""
+                      }`}
+                      onClick={() => handleSelectNeighbor(`${neighbor.name} (${neighbor.id})`)}
                     >
                       {neighbor.name} ({neighbor.id})
                     </li>
@@ -140,7 +126,6 @@ const DiaryCreation = () => {
             </div>
           </div>
 
-          {/* 색상 선택 */}
           <div className="mb-8">
             <label className="block text-2xl font-pretendard text-green-600 mb-2">
               커버색상 선택
@@ -161,7 +146,6 @@ const DiaryCreation = () => {
             </div>
           </div>
 
-          {/* 생성 및 취소 버튼 */}
           <div className="flex justify-between space-x-4">
             <button
               className="flex-1 py-3 bg-[#4CAF50] text-white rounded-lg text-2xl font-pretendard"
