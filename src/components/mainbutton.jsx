@@ -1,19 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
 
-const MainButton = ({ to = "/", className = "" }) => {
+
+const MainButton = ({ className = "", text }) => {
   return (
-    <Link
-      to={to}
-      className={`flex items-center bg-[#f6f6f6] rounded-full py-2 px-4 shadow-md hover:bg-[#e0e0e0] transition-colors ${className}`}
+    <button
+      className={`flex items-center bg-[#f6f6f6] rounded-full py-1 px-3 shadow-md hover:bg-[#e0e0e0] transition-colors ${className}`}
     >
       <img
         src={require("../img/backg.png")}
         alt="도토리"
-        className="w-8 h-8 mr-2"
+        className="w-5 h-5 mr-2"
       />
-      <span className="text-xl font-pretendard text-gray-700">메인으로</span>
-    </Link>
+      <span className="text-m font-pretendard text-gray-700">{text}</span>
+    </button>
   );
 };
 

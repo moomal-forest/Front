@@ -1,3 +1,4 @@
+
 import React from "react";
 
 const RecentMusic = () => {
@@ -10,19 +11,20 @@ const RecentMusic = () => {
   ];
 
   return (
-    <div className="bg-white rounded-lg p-4">
-      <h3 className="text-2xl font-semibold mb-4 text-custom-brown">
+    <div className="bg-white rounded-lg p-3 sm:p-4">
+      <h3 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-custom-brown">
         최근 추가된 음악
       </h3>
       <ul className="space-y-2">
         {recentTracks.map((track) => (
           <li key={track.id} className="flex items-center space-x-2">
-            <div className="w-16 h-16 bg-yellow-200"></div>
+            <img src={require(`../../img/민들레.png`)}
+                  alt="민들레" className="w-12 h-12 sm:w-16 sm:h-16"></img>
             <div>
-              <p className="font-semibold text-xl text-custom-brown">
+              <p className="font-semibold text-base sm:text-xl text-custom-brown">
                 {track.title}
               </p>
-              <p className="text-xl text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 {track.artist} • {track.duration}
               </p>
             </div>
