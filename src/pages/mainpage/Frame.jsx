@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Galpi from "../../components/galpi";
+import { mockApi } from "../../mocks/mockApi";
 
 const Frame = () => {
   const navigate = useNavigate();
   const [diaries, setDiaries] = useState([]);
 
   useEffect(() => {
-    const storedDiaries = JSON.parse(localStorage.getItem("diaries") || "[]");
-    setDiaries(storedDiaries);
+    mockApi.getDiaries().then(setDiaries);
   }, []);
 
   const handleDiaryCreation = () => {
