@@ -1,6 +1,8 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainButton from "../../components/mainbutton";
+import { mockApi } from '../../mocks/mockApi';
 import { neighbors } from "../neighbor/neighbors";
 
 const DiaryCreation = () => {
@@ -49,21 +51,22 @@ const DiaryCreation = () => {
     setSelectedColor(color);
   };
 
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (selectedColor && diaryName) {
       const newDiary = {
-        id: Date.now().toString(),
         name: diaryName,
         color: selectedColor,
         type: selectedNeighbors.length > 0 ? "exchange" : "personal",
         neighbors: selectedNeighbors,
       };
 
-      const diaries = JSON.parse(localStorage.getItem("diaries") || "[]");
-      diaries.push(newDiary);
-      localStorage.setItem("diaries", JSON.stringify(diaries));
-
-      navigate("/");
+      try {
+        const createdDiary = await mockApi.createDiary(newDiary);
+        navigate(`/diary/${createdDiary.id}`);
+      } catch (error) {
+        console.error("Error creating diary:", error);
+        alert("다이어리 생성 중 오류가 발생했습니다.");
+      }
     } else {
       alert("다이어리 이름과 색상을 모두 선택해주세요.");
     }
