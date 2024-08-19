@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainButton from "../../components/mainbutton";
@@ -77,19 +76,19 @@ const DiaryCreation = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white relative">
-      <div className="absolute top-4 right-4 z-30">
+    <div className="h-screen bg-white relative overflow-hidden">
+      {/* <div className="absolute top-4 right-4 z-30">
         <MainButton />
-      </div>
+      </div> */}
 
-      <div className="max-w-4xl mx-auto pt-16 px-8 relative z-10">
-        <h1 className="text-5xl font-bold text-green-600 mb-12 text-center">
+      <div className="max-w-4xl mx-auto pt-8 px-8 relative z-10 flex flex-col ">
+        {/* <h1 className="text-5xl font-bold text-green-600 mb-8 text-center">
           감정 다이어리 생성
-        </h1>
+        </h1> */}
 
-        <div className="bg-[#f6f6f6] p-8 rounded-2xl shadow-lg">
-          <div className="mb-8">
-            <label className="block text-2xl font-pretendard text-green-600 mb-2">
+        <div className="flex-grow bg-[#f6f6f6] p-6 rounded-2xl shadow-lg overflow-y-auto">
+          <div className="mb-3">
+            <label className="block text-xl font-pretendard text-green-600 mb-2">
               다이어리 이름
             </label>
             <input
@@ -100,8 +99,8 @@ const DiaryCreation = () => {
             />
           </div>
 
-          <div className="mb-8">
-            <label className="block text-2xl font-pretendard text-green-600 mb-2">
+          <div className="mb-3">
+            <label className="block text-xl font-pretendard text-green-600 mb-2">
               초대할 이웃 선택 (다중 선택 가능)
             </label>
             <div className="relative" ref={dropdownRef}>
@@ -129,12 +128,12 @@ const DiaryCreation = () => {
             </div>
           </div>
 
-          <div className="mb-8">
-            <label className="block text-2xl font-pretendard text-green-600 mb-2">
+          <div className="mb-3">
+            <label className="block text-xl font-pretendard text-green-600 mb-2">
               커버색상 선택
             </label>
-            <div className="bg-white p-8 rounded-lg flex justify-center items-center ">
-              <div className="grid grid-cols-7 gap-6 w-full max-w-2xl">
+            <div className="bg-white p-6 rounded-lg flex justify-center items-center">
+              <div className="grid grid-cols-7 gap-4">
                 {colors.map((color, index) => (
                   <button
                     key={index}
@@ -149,7 +148,7 @@ const DiaryCreation = () => {
             </div>
           </div>
 
-          <div className="flex justify-between space-x-4">
+          <div className="flex justify-between space-x-4 ">
             <button
               className="flex-1 py-3 bg-[#4CAF50] text-white rounded-lg text-2xl font-pretendard"
               onClick={handleCreate}
@@ -170,7 +169,7 @@ const DiaryCreation = () => {
         <img
           src={require("../../img/bg.png")}
           alt="배경"
-          className="w-full rounded-t-2xl"
+          className="w-full h-auto object-cover rounded-t-2xl"
         />
       </div>
     </div>

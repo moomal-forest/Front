@@ -5,4 +5,6 @@ export const neighbors = [
   { name: "윤수", id: "sysh.102" },
   { name: "현서", id: "dxrsla" },
   { name: "다연", id: "zzinddayeon" },
+  { name: "다연", id: "zzinddayeon" },
+  { name: "다연", id: "zzinddayeon" },
 ];

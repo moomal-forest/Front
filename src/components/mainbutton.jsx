@@ -9,7 +9,7 @@ const MainButton = ({ className = "", text }) => {
       <img
         src={require("../img/backg.png")}
         alt="도토리"
-        className="w-5 h-5 mr-2"
+        className="w-8 h-8 mr-2"
       />
       <span className="text-m font-pretendard text-gray-700">{text}</span>
     </button>
