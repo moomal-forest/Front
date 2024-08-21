@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 // useNavigate 훅은 React Router에서 제공되며, 프로그래밍적으로 다른 경로로 이동할 때 사용됩니다.
 
-import MainButton from "../../components/mainbutton";
+// import MainButton from "../../components/mainbutton";
 // MainButton 컴포넌트를 가져옵니다. (현재 주석 처리되어 있어 사용되지 않습니다.)
 
 import { mockApi } from "../../mocks/mockApi";

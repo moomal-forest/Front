@@ -23,14 +23,15 @@ const WriteDiary = () => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const emotions = [
-    { name: "행복", emoji: "😊" },
-    { name: "속상", emoji: "😢" },
-    { name: "설렘", emoji: "🥰" },
-    { name: "피곤", emoji: "🥱" },
-    { name: "짜증", emoji: "😠" },
-    { name: "걱정", emoji: "😔" },
-    { name: "평온", emoji: "😌" },
+    { name: "😊", label: "행복" },
+    { name: "🥲", label: "속상" },
+    { name: "🥰", label: "설렘" },
+    { name: "🥱", label: "피곤" },
+    { name: "😠", label: "짜증" },
+    { name: "😔", label: "걱정" },
+    { name: "😌", label: "평온" },
   ];
+  
 
   const getCurrentDate = () => {
     const now = new Date();
@@ -95,24 +96,31 @@ const WriteDiary = () => {
       setError("모든 필드를 채워주세요.");
       return;
     }
-
+  
     setIsSubmitting(true);
     setError(null);
-
+  
     const newEntry = {
       date: getCurrentDate(),
       content: input.content,
       emotion: input.emotion,
       song: {
         name: input.selectedSong.name,
-        artists: input.selectedSong.artists.map(artist => artist.name),
-        preview_url: input.selectedSong.preview_url
+        artists: input.selectedSong.artists,
+        preview_url: input.selectedSong.preview_url,
+        duration_ms: input.selectedSong.duration_ms, // 추가
+        album: {
+          images: input.selectedSong.album?.images || []
+        }
       }
     };
-
+  
     try {
-      // mockApi를 사용하여 일기 작성
       await mockApi.createEntry(diaryId, newEntry);
+      await mockApi.addRecentMusic({
+        ...input.selectedSong,
+        duration_ms: input.selectedSong.duration_ms // 이 부분이 있는지 확인
+      });  // 여기서 전체 selectedSong 객체를 전달
       console.log("일기를 작성하였습니다.");
       navigate(`/diary/${diaryId}`);
     } catch (error) {
@@ -122,6 +130,39 @@ const WriteDiary = () => {
       setIsSubmitting(false);
     }
   };
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!input.emotion || !input.content || !input.selectedSong) {
+  //     setError("모든 필드를 채워주세요.");
+  //     return;
+  //   }
+
+  //   setIsSubmitting(true);
+  //   setError(null);
+
+  //   const newEntry = {
+  //     date: getCurrentDate(),
+  //     content: input.content,
+  //     emotion: input.emotion,
+  //     song: {
+  //       name: input.selectedSong.name,
+  //       artists: input.selectedSong.artists.map(artist => artist.name),
+  //       preview_url: input.selectedSong.preview_url
+  //     }
+  //   };
+
+  //   try {
+  //     // mockApi를 사용하여 일기 작성
+  //     await mockApi.createEntry(diaryId, newEntry);
+  //     console.log("일기를 작성하였습니다.");
+  //     navigate(`/diary/${diaryId}`);
+  //   } catch (error) {
+  //     console.error("Error submitting diary entry:", error);
+  //     setError("일기 작성 중 오류가 발생했습니다. 다시 시도해 주세요.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   return (
     <div className="relative min-h-screen bg-white">
@@ -210,7 +251,7 @@ const WriteDiary = () => {
                       }`}
                     >
                       <span className="mr-2">{emotion.name}</span>
-                      <span>{emotion.emoji}</span>
+                      <span>{emotion.label}</span>
                     </button>
                   ))}
                 </div>
