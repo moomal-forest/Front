@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Nav from '../../components/Nav';
@@ -16,6 +15,10 @@ const DiaryMain = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentPlayingEntry, setCurrentPlayingEntry] = useState(null);
   const audioRef = useRef(null);
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [entriesPerPage] = useState(4);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,6 +71,42 @@ const DiaryMain = () => {
     }
   };
 
+  // Pagination logic
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentEntries = currentDiaryEntries.slice(indexOfFirstEntry, indexOfLastEntry);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const Pagination = ({ entriesPerPage, totalEntries, paginate, currentPage }) => {
+    const pageNumbers = [];
+
+    for (let i = 1; i <= Math.ceil(totalEntries / entriesPerPage); i++) {
+      pageNumbers.push(i);
+    }
+
+    return (
+      <nav className="flex justify-center mt-4">
+        <ul className="inline-flex space-x-2">
+          {pageNumbers.map(number => (
+            <li key={number}>
+              <button
+                onClick={() => paginate(number)}
+                className={`px-3 py-1 rounded-md ${
+                  currentPage === number
+                    ? 'bg-green-500 text-white'
+                    : 'bg-white text-green-500 hover:bg-green-100'
+                }`}
+              >
+                {number}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-[#f6f6f6]">
       <Nav />
@@ -75,10 +114,10 @@ const DiaryMain = () => {
         <div className="w-3/4 pr-8">
           <div className="flex justify-between items-center">
             <Galpi text={currentDiary ? currentDiary.name : '다이어리'} />
-            <div onClick={handleWrite}><MainButton text="기록하기" /></div>
+            <div onClick={handleWrite}><MainButton text="기록하기" className="mb-1"/></div>
           </div>
           <div className="bg-white rounded-lg p-6">
-            {currentDiaryEntries.map((entry) => (
+            {currentEntries.map((entry) => (
               <div key={entry.id} className="mb-4 p-4 bg-gray-100 rounded-lg">
                 <div className="flex justify-between items-center mb-2">
                   <span className="font-pretendard">{entry.date}</span>
@@ -100,6 +139,12 @@ const DiaryMain = () => {
                 </div>
               </div>
             ))}
+            <Pagination
+              entriesPerPage={entriesPerPage}
+              totalEntries={currentDiaryEntries.length}
+              paginate={paginate}
+              currentPage={currentPage}
+            />
           </div>
         </div>
         

@@ -1,3 +1,4 @@
+import { GoBell } from "react-icons/go";
 import { Link } from "react-router-dom";
 
 const Nav = () => {
@@ -25,7 +26,7 @@ const Nav = () => {
           <ul className="flex space-x-4">
             <li>
               <Link to="/notification" className="text-lg font-pretendard">
-                알림
+                <GoBell className="mt-1" />
               </Link>
             </li>
             <li>
