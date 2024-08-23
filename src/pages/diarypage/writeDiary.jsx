@@ -58,7 +58,7 @@ const WriteDiary = () => {
     try {
       setError(null);
       const response = await fetch(
-        `http://localhost:3080/search?query=${encodeURIComponent(searchQuery)}`
+        `http://localhost:3080/music/search?query=${encodeURIComponent(searchQuery)}`
       );
       if (!response.ok) throw new Error("Search failed");
       const data = await response.json();
