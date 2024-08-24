@@ -1,7 +1,15 @@
 import { GoBell } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 const Nav = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await AuthService.logout();
+    navigate("/login");
+  };
+
   return (
     <nav className="bg-[#f6f6f6] shadow-md mt-4 pb-2">
       <div className="container mx-auto px-4">
@@ -44,7 +52,7 @@ const Nav = () => {
                 내정보
               </Link>
             </li>
-            <li className="text-lg font-pretendard">로그아웃</li>
+            <button onClick={handleLogout} className="text-lg font-pretendard">로그아웃</button>
           </ul>
         </div>
       </div>

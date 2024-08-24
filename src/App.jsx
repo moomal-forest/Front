@@ -1,4 +1,6 @@
+import React from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import PrivateRoute from "./components/PrivateRoute";
 
 // Auth pages
 import Login from "./pages/auth/login";
@@ -21,20 +23,20 @@ function App() {
     <Router>
       <Routes>
         {/* Main routes */}
-        <Route path="/" element={<Main />} />
-        <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/neighbor" element={<NeighborPage />} />
-        <Route path="/notification" element={<DiaryPage />} />
-        <Route path="/emotionplaylist" element={<PlaylistPage />} />
+        <Route path="/" element={<PrivateRoute><Main /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
+        <Route path="/neighbor" element={<PrivateRoute><NeighborPage /></PrivateRoute>} />
+        <Route path="/notification" element={<PrivateRoute><DiaryPage /></PrivateRoute>} />
+        <Route path="/emotionplaylist" element={<PrivateRoute><PlaylistPage /></PrivateRoute>} />
 
         {/* Auth routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
         {/* Diary routes */}
-        <Route path="/diaryCreation" element={<DiaryCreation />} />
-        <Route path="/diary/:diaryId" element={<DiaryMain />} />
-        <Route path="/write/:diaryId" element={<WriteDiary />} />
+        <Route path="/diaryCreation" element={<PrivateRoute><DiaryCreation /></PrivateRoute>} />
+        <Route path="/diary/:diaryId" element={<PrivateRoute><DiaryMain /></PrivateRoute>} />
+        <Route path="/write/:diaryId" element={<PrivateRoute><WriteDiary /></PrivateRoute>} />
       </Routes>
     </Router>
   );

@@ -1,12 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthService from "../../services/AuthService";
+
 
 const Login = () => {
   const navigate = useNavigate();
+  const [userID, setUserID] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await AuthService.login(userID, password);
+  //     navigate("/");
+  //   } catch (error) {
+  //     setError(error.message || "로그인 중 오류가 발생했습니다.");
+  //   }
+  // };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigate("../mainpage/main");
+    try {
+      const result = await AuthService.login(userID, password);
+      console.log(result.message); // 성공 메시지 출력
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   const navigateToSignup = () => {
