@@ -1,4 +1,5 @@
 
+import axios from 'axios';
 import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Galpi from "../../components/galpi";
@@ -51,18 +52,35 @@ const WriteDiary = () => {
     setInput((prev) => ({ ...prev, emotion: emotion.name }));
   };
 
-  // 실제 백엔드 API를 사용하는 음악 검색 함수
+  // // 실제 백엔드 API를 사용하는 음악 검색 함수
+  // const handleSearch = async () => {
+  //   if (!searchQuery.trim()) return;
+
+  //   try {
+  //     setError(null);
+  //     const response = await fetch(
+  //       `http://localhost:3080/search?query=${encodeURIComponent(searchQuery)}`
+  //     );
+  //     if (!response.ok) throw new Error("Search failed");
+  //     const data = await response.json();
+  //     setSearchResults(data);
+  //   } catch (error) {
+  //     console.error("Error searching tracks:", error);
+  //     setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");
+  //   }
+  // };
+
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
 
     try {
       setError(null);
-      const response = await fetch(
-        `http://localhost:3080/music/search?query=${encodeURIComponent(searchQuery)}`
-      );
-      if (!response.ok) throw new Error("Search failed");
-      const data = await response.json();
-      setSearchResults(data);
+
+      const response = await axios.get(`http://localhost:3080/api/music/search`, {
+        params: { query: searchQuery }
+      });
+      setSearchResults(response.data);
+
     } catch (error) {
       console.error("Error searching tracks:", error);
       setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");

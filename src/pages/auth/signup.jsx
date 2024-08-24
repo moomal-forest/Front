@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import AuthService from "../../services/AuthService";
 
 const Signup = () => {
   const navigate = useNavigate();
+  const [userID, setUserID] = useState("");
+  const [fullname, setFullname] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSignup = (e) => {
+  // const handleSignup = async (e) => {
+  //   e.preventDefault();
+  //   if (password !== confirmPassword) {
+  //     setError("비밀번호가 일치하지 않습니다.");
+  //     return;
+  //   }
+  //   try {
+  //     await AuthService.signup(userID, fullname, password);
+  //     navigate("/");
+  //   } catch (error) {
+  //     setError(error.message || "회원가입 중 오류가 발생했습니다.");
+  //   }
+  // };
+  const handleSignup = async (e) => {
     e.preventDefault();
-    navigate("./login"); // 회원가입 성공 시, login 페이지로 이동
+    if (password !== confirmPassword) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+    try {
+      const result = await AuthService.signup(userID, fullname, password);
+      console.log(result.message); // 성공 메시지 출력
+      navigate("/");
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
