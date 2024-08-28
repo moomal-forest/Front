@@ -75,10 +75,12 @@ const WriteDiary = () => {
 
     try {
       setError(null);
+
       const response = await axios.get(`http://localhost:3080/api/music/search`, {
         params: { query: searchQuery }
       });
       setSearchResults(response.data);
+
     } catch (error) {
       console.error("Error searching tracks:", error);
       setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");
