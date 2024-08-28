@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 
 const NotificationPopup = ({ isOpen, onClose }) => {
@@ -12,8 +12,8 @@ const NotificationPopup = ({ isOpen, onClose }) => {
       >
         <IoClose size={20} />
       </button>
-      <h3 className="text-lg font-semibold mb-4 font-pretendard text-[#58AF5E]">알림</h3>
-      <div className="font-pretendard">
+      <h3 className="text-lg font-semibold mb-4 text-green-600">알림</h3>
+      <div>
         {/* Sample notifications */}
         <div className="mb-4 border-b border-gray-200 pb-2">
           <p className="font-medium">알림 제목 1</p>
