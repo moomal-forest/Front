@@ -105,47 +105,46 @@ const WriteDiary = () => {
       setIsPlaying(!isPlaying);
     }
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.emotion || !input.content || !input.selectedSong) {
-      setError("모든 필드를 채워주세요.");
-      return;
-    }
   
-    setIsSubmitting(true);
-    setError(null);
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (!input.emotion || !input.content || !input.selectedSong) {
+        setError("모든 필드를 채워주세요.");
+        return;
+      }
   
-    const newEntry = {
-      date: getCurrentDate(),
-      content: input.content,
-      emotion: input.emotion,
-      song: {
-        name: input.selectedSong.name,
-        artists: input.selectedSong.artists,
-        preview_url: input.selectedSong.preview_url,
-        duration_ms: input.selectedSong.duration_ms, // 추가
-        album: {
-          images: input.selectedSong.album?.images || []
+      setIsSubmitting(true);
+      setError(null);
+  
+      const newEntry = {
+        date: getCurrentDate(),
+        content: input.content,
+        emotion: input.emotion,
+        song: {
+          name: input.selectedSong.name,
+          artists: input.selectedSong.artists,
+          preview_url: input.selectedSong.preview_url,
+          duration_ms: input.selectedSong.duration_ms,
+          album: {
+            images: input.selectedSong.album?.images || []
+          }
         }
+      };
+  
+      try {
+        await mockApi.createEntry(diaryId, newEntry);
+        await mockApi.addRecentMusic(input.selectedSong);
+        await mockApi.addSongToEmotionPlaylist(input.emotion, input.selectedSong);
+        console.log("일기를 작성하였습니다.");
+        navigate(`/diary/${diaryId}`);
+      } catch (error) {
+        console.error("Error submitting diary entry:", error);
+        setError("일기 작성 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      } finally {
+        setIsSubmitting(false);
       }
     };
-  
-    try {
-      await mockApi.createEntry(diaryId, newEntry);
-      await mockApi.addRecentMusic({
-        ...input.selectedSong,
-        duration_ms: input.selectedSong.duration_ms // 이 부분이 있는지 확인
-      });  // 여기서 전체 selectedSong 객체를 전달
-      console.log("일기를 작성하였습니다.");
-      navigate(`/diary/${diaryId}`);
-    } catch (error) {
-      console.error("Error submitting diary entry:", error);
-      setError("일기 작성 중 오류가 발생했습니다. 다시 시도해 주세요.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   if (!input.emotion || !input.content || !input.selectedSong) {

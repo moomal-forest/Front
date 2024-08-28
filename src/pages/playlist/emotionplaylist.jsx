@@ -1,72 +1,85 @@
-
 import React, { useEffect, useState } from 'react';
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import GreenButton from '../../components/greenbutton';
 import MainButton from '../../components/mainbutton';
 import WhiteButton from '../../components/whitebutton';
+import { mockApi } from '../../mocks/mockApi';
 
 const EmotionPlaylist = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [playlist, setPlaylist] = useState([]);
+  const [emotionPlaylists, setEmotionPlaylists] = useState({});
+  const [selectedEmotion, setSelectedEmotion] = useState(null);
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate('/');
-  };
-
   const emotions = [
-    { name: "행복", emoji: "😊" },
-    { name: "속상", emoji: "😢" },
-    { name: "설렘", emoji: "🥰" },
-    { name: "피곤", emoji: "🥱" },
-    { name: "짜증", emoji: "😠" },
-    { name: "걱정", emoji: "😔" },
-    { name: "평온", emoji: "😌" },
+    { name: "😊", label: "행복" },
+    { name: "🥲", label: "속상" },
+    { name: "🥰", label: "설렘" },
+    { name: "🥱", label: "피곤" },
+    { name: "😠", label: "짜증" },
+    { name: "😔", label: "걱정" },
+    { name: "😌", label: "평온" },
   ];
 
   useEffect(() => {
-    const savedPlaylist = localStorage.getItem("emotionPlaylist");
-    if (savedPlaylist) {
-      setPlaylist(JSON.parse(savedPlaylist));
-    }
+    fetchEmotionPlaylists();
   }, []);
 
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-
+  const fetchEmotionPlaylists = async () => {
     try {
-      setError(null);
-      const response = await fetch(
-        `http://localhost:3080/search?query=${encodeURIComponent(searchQuery)}`
-      );
-      if (!response.ok) throw new Error("Search failed");
-      const data = await response.json();
-      setSearchResults(data);
+      const playlists = await mockApi.getAllEmotionPlaylists();
+      setEmotionPlaylists(playlists);
     } catch (error) {
-      console.error("Error searching tracks:", error);
-      setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");
+      console.error("Error fetching emotion playlists:", error);
+      setError("플레이리스트를 불러오는 중 오류가 발생했습니다.");
     }
   };
 
-  const addToPlaylist = (song) => {
-    const updatedPlaylist = [...playlist, song];
-    setPlaylist(updatedPlaylist);
-    localStorage.setItem("emotionPlaylist", JSON.stringify(updatedPlaylist));
+  const handleSearch = () => {
+    if (!searchQuery.trim()) return;
+
+    const results = [];
+    for (const emotion in emotionPlaylists) {
+      const matchingSongs = emotionPlaylists[emotion].filter(song =>
+        song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        song.artists.some(artist => artist.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+      results.push(...matchingSongs.map(song => ({ ...song, emotion })));
+    }
+
+    setSearchResults(results);
+    if (results.length === 0) {
+      setError("검색 결과가 없습니다. 해당 음악이 플레이리스트에 저장되어 있지 않습니다.");
+    } else {
+      setError(null);
+    }
   };
 
-  const removeFromPlaylist = (index) => {
-    const updatedPlaylist = playlist.filter((_, i) => i !== index);
-    setPlaylist(updatedPlaylist);
-    localStorage.setItem("emotionPlaylist", JSON.stringify(updatedPlaylist));
+  const handleEmotionSelect = (emotion) => {
+    setSelectedEmotion(emotion.name);
+    setSearchResults([]);
+    setError(null);
+  };
+
+  const removeFromPlaylist = async (song) => {
+    if (!selectedEmotion) return;
+
+    try {
+      await mockApi.removeSongFromEmotionPlaylist(selectedEmotion, song);
+      fetchEmotionPlaylists();
+    } catch (error) {
+      console.error("Error removing song from playlist:", error);
+      setError("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
+    }
   };
 
   return (
     <div className="min-h-screen bg-white relative z-20">
-      <div onClick={handleClick} className="absolute top-4 right-4 z-30" >
+      <div onClick={() => navigate('/')} className="absolute top-4 right-4 z-30">
         <MainButton text="메인으로" />
       </div>
 
@@ -79,12 +92,13 @@ const EmotionPlaylist = () => {
           {emotions.map((emotion, index) => (
             <button
               key={index}
-              className="bg-green-100 hover:bg-green-300 rounded-full px-3 sm:px-4 py-1 sm:py-2 text-green-800 flex items-center whitespace-nowrap"
+              onClick={() => handleEmotionSelect(emotion)}
+              className={`bg-green-100 hover:bg-green-300 rounded-full px-3 sm:px-4 py-1 sm:py-2 text-green-800 flex items-center whitespace-nowrap ${
+                selectedEmotion === emotion.name ? 'ring-2 ring-green-500' : ''
+              }`}
             >
-              <span className="mr-1 sm:mr-2 text-base sm:text-lg md:text-2xl font-pretendard">
-                {emotion.name}
-              </span>
-              <span className="text-lg sm:text-xl md:text-2xl">{emotion.emoji}</span>
+              <span className="mr-1 sm:mr-2 text-base sm:text-lg md:text-2xl">{emotion.name}</span>
+              <span className="text-base sm:text-lg md:text-2xl font-pretendard">{emotion.label}</span>
             </button>
           ))}
         </div>
@@ -128,56 +142,42 @@ const EmotionPlaylist = () => {
                 >
                   <div className="flex items-center mb-2 sm:mb-0">
                     <img
-                      src={
-                        song.album.images[0]?.url ||
-                        "/path/to/default-image.jpg"
-                      }
+                      src={song.album?.images[0]?.url || "/path/to/default-image.jpg"}
                       alt={song.name}
                       className="w-10 h-10 sm:w-12 sm:h-12 mr-3 sm:mr-4 rounded"
                     />
                     <div>
                       <p className="font-bold text-green-700 text-sm sm:text-base">{song.name}</p>
                       <p className="text-xs sm:text-sm text-gray-600">
-                        {song.artists.join(", ")} •{" "}
-                        {Math.floor(song.duration_ms / 60000)}:
-                        {((song.duration_ms % 60000) / 1000)
-                          .toFixed(0)
-                          .padStart(2, "0")}
+                        {song.artists.join(", ")} • {emotions.find(e => e.name === song.emotion)?.label}
                       </p>
                     </div>
                   </div>
-                  <GreenButton
-                    text="추가"
-                    onClick={() => addToPlaylist(song)}
-                  />
                 </div>
               ))}
             </div>
           )}
+
           <h2 className="text-xl sm:text-2xl font-bold mb-2 font-pretendard text-custom-brown">
-            현재 플레이리스트
+            {selectedEmotion ? `${emotions.find(e => e.name === selectedEmotion)?.label} 플레이리스트` : '감정을 선택해주세요'}
           </h2>
-          {playlist.map((song, index) => (
+          {selectedEmotion && emotionPlaylists[selectedEmotion]?.map((song, index) => (
             <div
               key={index}
               className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 last:mb-0"
             >
               <div className="flex items-center mb-2 sm:mb-0">
                 <img
-                  src={
-                    song.album.images[0]?.url || "/path/to/default-image.jpg"
-                  }
+                  src={song.album?.images[0]?.url || "/path/to/default-image.jpg"}
                   alt={song.name}
                   className="w-10 h-10 sm:w-12 sm:h-12 mr-3 sm:mr-4 rounded"
                 />
                 <div>
                   <p className="font-bold text-green-700 text-sm sm:text-base">{song.name}</p>
                   <p className="text-xs sm:text-sm text-gray-600">
-                    {song.artists[0].name} •{" "}
+                    {song.artists.join(", ")} •{" "}
                     {Math.floor(song.duration_ms / 60000)}:
-                    {((song.duration_ms % 60000) / 1000)
-                      .toFixed(0)
-                      .padStart(2, "0")}
+                    {((song.duration_ms % 60000) / 1000).toFixed(0).padStart(2, "0")}
                   </p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const EmotionPlaylist = () => {
                 <GreenButton text="재생" />
                 <WhiteButton
                   text="삭제"
-                  onClick={() => removeFromPlaylist(index)}
+                  onClick={() => removeFromPlaylist(song)}
                 />
               </div>
             </div>
@@ -206,3 +206,66 @@ const EmotionPlaylist = () => {
 };
 
 export default EmotionPlaylist;
+
+// 실제 백엔드 연결 시 사용할 코드 (주석 처리)
+/*
+import axios from 'axios';
+
+const EmotionPlaylist = () => {
+  // ... (다른 코드는 동일)
+
+  const fetchEmotionPlaylists = async () => {
+    try {
+      const response = await axios.get('/api/emotion-playlists');
+      setEmotionPlaylists(response.data);
+    } catch (error) {
+      console.error("Error fetching emotion playlists:", error);
+      setError("플레이리스트를 불러오는 중 오류가 발생했습니다.");
+    }
+  };
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      setError(null);
+      const response = await axios.get('/api/music/search', {
+        params: { query: searchQuery }
+      });
+      setSearchResults(response.data);
+    } catch (error) {
+      console.error("Error searching tracks:", error);
+      setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    }
+  };
+
+  const addToPlaylist = async (song) => {
+    if (!selectedEmotion) {
+      setError("먼저 감정을 선택해주세요.");
+      return;
+    }
+
+    try {
+      await axios.post('/api/emotion-playlists', { emotion: selectedEmotion, song });
+      fetchEmotionPlaylists();
+    } catch (error) {
+      console.error("Error adding song to playlist:", error);
+      setError("플레이리스트에 노래를 추가하는 중 오류가 발생했습니다.");
+    }
+  };
+
+  const removeFromPlaylist = async (song) => {
+    if (!selectedEmotion) return;
+
+    try {
+      await axios.delete('/api/emotion-playlists', { data: { emotion: selectedEmotion, song } });
+      fetchEmotionPlaylists();
+    } catch (error) {
+      console.error("Error removing song from playlist:", error);
+      setError("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
+    }
+  };
+
+  // ... (나머지 코드는 동일)
+};
+*/
