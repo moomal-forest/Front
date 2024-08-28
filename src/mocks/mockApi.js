@@ -141,7 +141,6 @@ export const mockApi = {
     return recentMusic; // 최근 음악 목록 반환
   },
 
-
   addSongToEmotionPlaylist: async (emotion, song) => {
     await delay(200);
     if (!emotionPlaylists[emotion]) {
@@ -160,6 +159,5 @@ export const mockApi = {
   getAllEmotionPlaylists: async () => {
     await delay(300);
     return emotionPlaylists;
-  }
-
+  },
 };

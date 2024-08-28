@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { IoAlertCircleOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import GreenButton from '../../components/greenbutton';
@@ -12,6 +12,8 @@ const EmotionPlaylist = () => {
   const [emotionPlaylists, setEmotionPlaylists] = useState({});
   const [selectedEmotion, setSelectedEmotion] = useState(null);
   const [error, setError] = useState(null);
+  const [playingSongId, setPlayingSongId] = useState(null);
+  const audioRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -26,7 +28,24 @@ const EmotionPlaylist = () => {
   ];
 
   useEffect(() => {
+    audioRef.current = new Audio();
     fetchEmotionPlaylists();
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (audioElement) {
+      const handleEnded = () => setPlayingSongId(null);
+      audioElement.addEventListener('ended', handleEnded);
+      return () => {
+        audioElement.removeEventListener('ended', handleEnded);
+      };
+    }
   }, []);
 
   const fetchEmotionPlaylists = async () => {
@@ -46,7 +65,7 @@ const EmotionPlaylist = () => {
     for (const emotion in emotionPlaylists) {
       const matchingSongs = emotionPlaylists[emotion].filter(song =>
         song.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        song.artists.some(artist => artist.toLowerCase().includes(searchQuery.toLowerCase()))
+        song.artists.toLowerCase().includes(searchQuery.toLowerCase())
       );
       results.push(...matchingSongs.map(song => ({ ...song, emotion })));
     }
@@ -65,17 +84,55 @@ const EmotionPlaylist = () => {
     setError(null);
   };
 
-  const removeFromPlaylist = async (song) => {
-    if (!selectedEmotion) return;
+  const getSongId = (song) => `${song.name}-${song.artists}`;
 
-    try {
-      await mockApi.removeSongFromEmotionPlaylist(selectedEmotion, song);
-      fetchEmotionPlaylists();
-    } catch (error) {
-      console.error("Error removing song from playlist:", error);
-      setError("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
+  const playSong = (song) => {
+    const songId = getSongId(song);
+    if (audioRef.current) {
+      if (playingSongId === songId) {
+        audioRef.current.pause();
+        setPlayingSongId(null);
+      } else {
+        audioRef.current.src = song.preview_url;
+        audioRef.current.play().catch(e => console.error("Audio playback failed:", e));
+        setPlayingSongId(songId);
+      }
     }
   };
+
+  const renderSongItem = (song, emotion) => (
+    <div key={getSongId(song)} className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 last:mb-0">
+      <div className="flex items-center mb-2 sm:mb-0">
+      <img
+                      src={song.album?.images[0]?.url || "/path/to/default-image.jpg"}
+                      alt={song.name}
+                      className="w-10 h-10 sm:w-12 sm:h-12 mr-3 sm:mr-4 rounded"
+                    />
+        <div>
+          <p className="font-bold text-green-700 text-sm sm:text-base">{song.name}</p>
+          <p className="text-xs sm:text-sm text-gray-600">
+            {song.artists} • {emotion ? emotions.find(e => e.name === emotion)?.label : ''}
+          </p>
+        </div>
+      </div>
+      <div className="flex space-x-4 mt-2 sm:mt-0">
+  {playingSongId === getSongId(song) ? (
+    <WhiteButton
+      text="❚❚"
+      onClick={() => playSong(song)}
+      style={{ padding: '0.5rem 1rem' }} // 좌우 패딩 증가
+    />
+  ) : (
+    <GreenButton
+      text="▶"
+      onClick={() => playSong(song)}
+      style={{ padding: '0.5rem 1rem' }} // 좌우 패딩 증가
+    />
+  )}
+</div>
+
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white relative z-20">
@@ -135,61 +192,14 @@ const EmotionPlaylist = () => {
           {searchResults.length > 0 && (
             <div className="mb-6">
               <h2 className="text-base sm:text-lg font-bold mb-2">검색 결과</h2>
-              {searchResults.map((song, index) => (
-                <div
-                  key={index}
-                  className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 last:mb-0"
-                >
-                  <div className="flex items-center mb-2 sm:mb-0">
-                    <img
-                      src={song.album?.images[0]?.url || "/path/to/default-image.jpg"}
-                      alt={song.name}
-                      className="w-10 h-10 sm:w-12 sm:h-12 mr-3 sm:mr-4 rounded"
-                    />
-                    <div>
-                      <p className="font-bold text-green-700 text-sm sm:text-base">{song.name}</p>
-                      <p className="text-xs sm:text-sm text-gray-600">
-                        {song.artists.join(", ")} • {emotions.find(e => e.name === song.emotion)?.label}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              {searchResults.map((song) => renderSongItem(song, song.emotion))}
             </div>
           )}
 
           <h2 className="text-xl sm:text-2xl font-bold mb-2 font-pretendard text-custom-brown">
             {selectedEmotion ? `${emotions.find(e => e.name === selectedEmotion)?.label} 플레이리스트` : '감정을 선택해주세요'}
           </h2>
-          {selectedEmotion && emotionPlaylists[selectedEmotion]?.map((song, index) => (
-            <div
-              key={index}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 last:mb-0"
-            >
-              <div className="flex items-center mb-2 sm:mb-0">
-                <img
-                  src={song.album?.images[0]?.url || "/path/to/default-image.jpg"}
-                  alt={song.name}
-                  className="w-10 h-10 sm:w-12 sm:h-12 mr-3 sm:mr-4 rounded"
-                />
-                <div>
-                  <p className="font-bold text-green-700 text-sm sm:text-base">{song.name}</p>
-                  <p className="text-xs sm:text-sm text-gray-600">
-                    {song.artists.join(", ")} •{" "}
-                    {Math.floor(song.duration_ms / 60000)}:
-                    {((song.duration_ms % 60000) / 1000).toFixed(0).padStart(2, "0")}
-                  </p>
-                </div>
-              </div>
-              <div className="flex space-x-2 mt-2 sm:mt-0">
-                <GreenButton text="재생" />
-                <WhiteButton
-                  text="삭제"
-                  onClick={() => removeFromPlaylist(song)}
-                />
-              </div>
-            </div>
-          ))}
+          {selectedEmotion && emotionPlaylists[selectedEmotion]?.map((song) => renderSongItem(song, selectedEmotion))}
 
           <div className="mt-4 text-left text-xs sm:text-sm flex text-green-600">
             <IoAlertCircleOutline className="mt-[2px] sm:mt-[2.8px] mr-1"/>
@@ -206,66 +216,3 @@ const EmotionPlaylist = () => {
 };
 
 export default EmotionPlaylist;
-
-// 실제 백엔드 연결 시 사용할 코드 (주석 처리)
-/*
-import axios from 'axios';
-
-const EmotionPlaylist = () => {
-  // ... (다른 코드는 동일)
-
-  const fetchEmotionPlaylists = async () => {
-    try {
-      const response = await axios.get('/api/emotion-playlists');
-      setEmotionPlaylists(response.data);
-    } catch (error) {
-      console.error("Error fetching emotion playlists:", error);
-      setError("플레이리스트를 불러오는 중 오류가 발생했습니다.");
-    }
-  };
-
-  const handleSearch = async () => {
-    if (!searchQuery.trim()) return;
-
-    try {
-      setError(null);
-      const response = await axios.get('/api/music/search', {
-        params: { query: searchQuery }
-      });
-      setSearchResults(response.data);
-    } catch (error) {
-      console.error("Error searching tracks:", error);
-      setError("검색 중 오류가 발생했습니다. 다시 시도해 주세요.");
-    }
-  };
-
-  const addToPlaylist = async (song) => {
-    if (!selectedEmotion) {
-      setError("먼저 감정을 선택해주세요.");
-      return;
-    }
-
-    try {
-      await axios.post('/api/emotion-playlists', { emotion: selectedEmotion, song });
-      fetchEmotionPlaylists();
-    } catch (error) {
-      console.error("Error adding song to playlist:", error);
-      setError("플레이리스트에 노래를 추가하는 중 오류가 발생했습니다.");
-    }
-  };
-
-  const removeFromPlaylist = async (song) => {
-    if (!selectedEmotion) return;
-
-    try {
-      await axios.delete('/api/emotion-playlists', { data: { emotion: selectedEmotion, song } });
-      fetchEmotionPlaylists();
-    } catch (error) {
-      console.error("Error removing song from playlist:", error);
-      setError("플레이리스트에서 노래를 삭제하는 중 오류가 발생했습니다.");
-    }
-  };
-
-  // ... (나머지 코드는 동일)
-};
-*/
