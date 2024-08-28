@@ -55,6 +55,8 @@ let entries = {
 // 최근 추가된 음악을 저장하는 배열
 let recentMusic = [];
 
+let emotionPlaylists = {};
+
 // API 요청 지연을 시뮬레이션하는 함수
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -138,4 +140,26 @@ export const mockApi = {
     await delay(300); // 300ms 지연
     return recentMusic; // 최근 음악 목록 반환
   },
+
+
+  addSongToEmotionPlaylist: async (emotion, song) => {
+    await delay(200);
+    if (!emotionPlaylists[emotion]) {
+      emotionPlaylists[emotion] = [];
+    }
+    emotionPlaylists[emotion].push(song);
+  },
+
+  // 감정별 플레이리스트 가져오기
+  getEmotionPlaylist: async (emotion) => {
+    await delay(300);
+    return emotionPlaylists[emotion] || [];
+  },
+
+  // 모든 감정 플레이리스트 가져오기
+  getAllEmotionPlaylists: async () => {
+    await delay(300);
+    return emotionPlaylists;
+  }
+
 };
