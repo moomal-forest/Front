@@ -10,7 +10,7 @@ import Signup from "./pages/auth/signup";
 import Main from "./pages/mainpage/main";
 import ProfilePage from "./pages/mypage/profile";
 import NeighborPage from "./pages/neighbor/neighbor";
-import DiaryPage from "./pages/notification/notification";
+
 import PlaylistPage from "./pages/playlist/emotionplaylist";
 
 // Diary pages
@@ -26,7 +26,7 @@ function App() {
         <Route path="/" element={<PrivateRoute><Main /></PrivateRoute>} />
         <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/neighbor" element={<PrivateRoute><NeighborPage /></PrivateRoute>} />
-        <Route path="/notification" element={<PrivateRoute><DiaryPage /></PrivateRoute>} />
+      
         <Route path="/emotionplaylist" element={<PrivateRoute><PlaylistPage /></PrivateRoute>} />
 
         {/* Auth routes */}
